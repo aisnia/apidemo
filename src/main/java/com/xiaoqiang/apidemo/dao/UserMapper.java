@@ -1,0 +1,44 @@
+package com.xiaoqiang.apidemo.dao;
+
+import com.xiaoqiang.apidemo.bean.User;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+
+/**
+ * @author xiaoqiang
+ * @date 2019/3/28-21:19
+ */
+@Mapper
+public interface UserMapper {
+    @Select("select * from user where userName = #{userName}")
+    public User findByName(String userName);
+
+    @Select("select * from user where id = #{id}")
+    public User findById(Integer id);
+
+    @Select("select id from user where userName=#{userName}")
+    Integer getIdByName(String userName);
+
+    @Select("select count(*) from user where userName=#{userName}")
+    Integer isExistUser(String userName);
+
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    @Insert("insert into user(userName,name,password,solt,perms,sex,birthday,phone,email) values(#{userName},#{name},#{password},#{solt},#{perms},#{sex},#{birthday},#{phone},#{email})")
+    boolean addUser(User user);
+
+    @Select("select id,sex,name,perms,phone,email from user")
+    List<User> findAllUsers();
+
+    @Delete("delete from user where id=#{id}")
+    boolean deleteUserById(Integer id);
+
+    @Update("update user set name=#{name},sex=#{sex},birthday=#{birthday},phone=#{phone},email=#{email} where id=#{id}")
+    boolean updateUser(User user);
+
+    @Select("select perms from user where id=#{id}")
+    String findPermsById(Integer id);
+
+    @Update("update user set perms=#{perms} where id=#{id}")
+    boolean authorizeToUser(Integer id, String perms);
+}

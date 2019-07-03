@@ -33,14 +33,20 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
         String token = req.getParameter("accessToken");
+        String contentType = req.getContentType();
+        if (contentType!=null&&req.getContentType().contains("multipart/form-data")) {
+            return true;
+        }
         return token != null;
     }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
         String code =  request.getAttribute("status").toString();
+        String msg =  request.getAttribute("msg").toString();
         Map<String,Object> map = new HashMap<>(16);
         map.put("code",code);
+        map.put("msg",msg);
         String json = JSON.toJSONString(map);
         HttpServletResponse response1 = (HttpServletResponse) response;
         response.setCharacterEncoding("utf-8");
@@ -70,7 +76,8 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 
         } else {
             //如果请求没有携带token请求头
-            request.setAttribute("status","没有携带请求头");
+            request.setAttribute("status","1");
+            request.setAttribute("msg","没有携带token请求头");
             return false;
         }
     }
@@ -83,16 +90,22 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response){
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String contentType = request.getContentType();
+        if (contentType!=null&&request.getContentType().contains("multipart/form-data")) {
+            return true;
+        }
         String token = httpServletRequest.getParameter("accessToken");
         JWTToken jwtToken = new JWTToken(token);
         try {
             getSubject(request, response).login(jwtToken);
             return true;
         } catch (MyTokenExpireException e) {
-            httpServletRequest.setAttribute("status", "token过期");
+            httpServletRequest.setAttribute("status", "7");
+            httpServletRequest.setAttribute("msg", "token过期");
             return false;
         } catch (MyTokenErrorException e) {
-            httpServletRequest.setAttribute("status", "toekn错误");
+            httpServletRequest.setAttribute("status", "1");
+            httpServletRequest.setAttribute("msg", "toekn错误");
             return false;
         }
 

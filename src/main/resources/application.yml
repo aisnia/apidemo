@@ -3,6 +3,10 @@ server:
   port: 8081
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 100MB
   thymeleaf:
     cache: false
   datasource:
@@ -36,5 +40,8 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: true
+
+
+
 
 

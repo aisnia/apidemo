@@ -15,7 +15,7 @@ import java.util.Collection;
 
 /**
  * @author xiaoqiang
- * @date 2019/3/28-21:19
+ * @date 2019/6/25-15:12
  */
 public class MyModularRealmAuthenticator extends ModularRealmAuthenticator {
 

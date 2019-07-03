@@ -3,8 +3,8 @@ package com.xiaoqiang.apidemo.bean;
 import java.io.Serializable;
 
 /**
- * @功能描述：用户类
- * @创建日期: 2019/2/22 20:21
+ *@author xiaoqiang
+ *@Date 2019/6/24-21:19
  */
 public class User implements Serializable {
     //    用户id
@@ -22,12 +22,28 @@ public class User implements Serializable {
     //    性别   0  男   1 女
     private Integer sex;
 
-    //    生日
-    private String birthday;
+    //    注册时间
+    private String date;
     //    电话
     private String phone;
     //    邮箱
     private String email;
+
+    public User() {
+    }
+
+    public User(Integer id, String userName, String name, String password, String solt, String perms, Integer sex, String date, String phone, String email) {
+        this.id = id;
+        this.userName = userName;
+        this.name = name;
+        this.password = password;
+        this.solt = solt;
+        this.perms = perms;
+        this.sex = sex;
+        this.date = date;
+        this.phone = phone;
+        this.email = email;
+    }
 
     @Override
     public String toString() {
@@ -39,7 +55,7 @@ public class User implements Serializable {
                 ", solt='" + solt + '\'' +
                 ", perms='" + perms + '\'' +
                 ", sex=" + sex +
-                ", birthday='" + birthday + '\'' +
+                ", date='" + date + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 '}';
@@ -101,12 +117,12 @@ public class User implements Serializable {
         this.sex = sex;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getDate() {
+        return date;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getPhone() {
@@ -122,22 +138,6 @@ public class User implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public User() {
-    }
-
-    public User(Integer id, String userName, String name, String password, String solt, String perms, Integer sex, String birthday, String phone, String email) {
-        this.id = id;
-        this.userName = userName;
-        this.name = name;
-        this.password = password;
-        this.solt = solt;
-        this.perms = perms;
-        this.sex = sex;
-        this.birthday = birthday;
-        this.phone = phone;
         this.email = email;
     }
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Letter - Simple Sign Up Form</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="css/demo.css" />
+  <link rel="stylesheet" href="css/templatemo-style.css">
+
+  <script type="text/javascript" src="js/modernizr.custom.86080.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#login").on("click",function () {
+				var userName=$("#userName").val();
+				var password=$("#password").val();
+				password=$.md5(password);
+				$.ajax({
+					type:"POST",
+					url:"http://localhost:8081/guest/login",
+					data:{userName:userName,password:password},
+					dataType:"json",
+					error: function(xhr, status, error){
+						alert("xhr: " + xhr.status + ", status: " + status +  ", error: " + error)
+					},
+					success:function (data) {
+						if(data.code==1){
+							alert("账号或密码错误");
+						}else if(data.code==0){
+							alert("登录成功");
+							window.sessionStorage.setItem("accessToken", data.accessToken);
+							window.sessionStorage.setItem("refreshToken", data.refreshToken);
+							window.location.href="work.html";
+						}
+					},
+				})
+			})
+		})
+	</script>
+	</head>
+
+	<body>
+
+			<div id="particles-js"></div>
+
+			<ul class="cb-slideshow">
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	        </ul>
+
+			<div class="container-fluid">
+				<div class="row cb-slideshow-text-container ">
+					<div class= "tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
+					<header class="mb-5"><h1>Music</h1></header>
+					<P class="mb-5">小强的音乐网站</P>
+
+                    <form action="#"  class="subscribe-form">
+               	    	<div class="row form-section">
+
+							<div class="col-md-7 col-sm-7 col-xs-7">
+			                      <input name="username" type="text" class="form-control" id="userName" placeholder="请输入用户名" required/>
+				  			</div>
+							<div class="col-md-7 col-sm-7 col-xs-7">
+								<input name="password" type="password" class="form-control" id="password" placeholder="请输入密码" required/>
+							</div>
+
+
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<button id="login" type="button" class="tm-btn-subscribe">登录</button>
+							</div>
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<a href="register.html" >没有用户名，点击注册</a>
+							</div>
+
+						</div>
+                    </form>
+
+
+
+					</div>
+				</div>
+
+			</div>
+
+
+
+	</body>
+
+	<script type="text/javascript" src="js/particles.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+</html>

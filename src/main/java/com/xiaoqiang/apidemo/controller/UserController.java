@@ -35,12 +35,12 @@ public class UserController {
     //    用户登录
     @ResponseBody
     @RequestMapping(value = "/guest/login",method = RequestMethod.POST)
-    public Map<String, Object> login(@RequestParam("name") String name,@RequestParam("password") String password,@RequestParam("token") String token,@RequestParam("Vcode") String Vcode) {
+    public Map<String, Object> login(@RequestParam("userName") String userName,@RequestParam("password") String password) {
         Map<String, Object> map = null;
         Subject subject = SecurityUtils.getSubject();
         if (!subject.isAuthenticated()) {
-//用户名密码包装成  UsernamePasswordToken 对象
-            map = userService.login(name, password,token,Vcode);
+            //用户名密码包装成  UsernamePasswordToken 对象
+            map = userService.login(userName, password);
         } else {
             map = new HashMap<>();
 
@@ -68,5 +68,19 @@ public class UserController {
     @RequestMapping(value = "/user/updateInfo", method = RequestMethod.POST)
     public Map<String, Object> updateUserInfo(HttpServletRequest request) {
         return userService.updateUserInfo(request);
+    }
+
+    //    确认密码
+    @ResponseBody
+    @RequestMapping(value = "/user/confirmPassword", method = RequestMethod.GET)
+    public Map<String, Object> confirmPassword(@RequestParam("accessToken") String accessToken, @RequestParam("password") String password) {
+        return userService.confirmPassword(accessToken, password);
+    }
+
+    //    修改密码
+    @ResponseBody
+    @RequestMapping(value = "/user/updatePwd", method = RequestMethod.GET)
+    public Map<String, Object> updatePwd(@RequestParam("accessToken") String accessToken, @RequestParam("uuid") String uuid,@RequestParam("password") String password) {
+        return userService.updatePwd(accessToken, uuid,password);
     }
 }

@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * @author xiaoqiang
- * @date 2019/3/29-9:11
+ * @date 2019/6/25-09:12
  */
 @Configuration
 public class KaptchaConfig {

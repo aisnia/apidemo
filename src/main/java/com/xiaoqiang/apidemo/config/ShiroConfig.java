@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * @author xiaoqiang
- * @date 2019/3/28-21:19
+ * @date 2019/6/26-10:12
  */
 @Configuration
 public class ShiroConfig {
@@ -51,9 +51,11 @@ public class ShiroConfig {
 //拦截
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         //配置不会拦截的链接，顺序判断
-        filterChainDefinitionMap.put("/*.js","anon");
-        filterChainDefinitionMap.put("/*.ico","anon");
-        filterChainDefinitionMap.put("/*.css","anon");
+        filterChainDefinitionMap.put("/**.js","anon");
+        filterChainDefinitionMap.put("/register.html","anon");
+        filterChainDefinitionMap.put("/login.html","anon");
+        filterChainDefinitionMap.put("/**.ico","anon");
+        filterChainDefinitionMap.put("/**.css","anon");
         filterChainDefinitionMap.put("/img/**","anon");
         filterChainDefinitionMap.put("/guest/**", "anon");
         filterChainDefinitionMap.put("/actuator/**","anon");

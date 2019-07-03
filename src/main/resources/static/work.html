@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            hreat = function (h) {
+                // alert($(h).children("span").attr("value"));
+                if ($(h).children("span").attr("value") == 1) {
+                    hreat2(h);
+                } else {
+                    hreat1(h);
+                }
+
+
+            }
+            hreat1 = function (h) {
+                var mId = $(h).attr("value")
+                // alert(mId);
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/setMylove",
+                    data: {accessToken: accessToken, mId: mId},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            $(h).children("span").css("color", "rgb(255, 0, 0)");
+                            $(h).children("span").attr("value", "1");
+                        }
+                    },
+
+                })
+
+
+            }
+
+            hreat2 = function (h) {
+                var mId = $(h).attr("value");
+                // alert(mId);
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/removeMylove",
+                    data: {accessToken: accessToken, mId: mId},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            $(h).children("span").css("color", "rgb(0, 0, 0)");
+                            $(h).children("span").attr("value", "0");
+                        }
+                    },
+
+                })
+
+
+            }
+
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return null;
+            }
+
+            $('#pModal').modal('hide');
+            $('#pModal').on('hide.bs.modal', function () {
+                $("#pwd").val('');
+                $("#pwd2").val('');
+                $("#pwdMsg").css("display", "none");
+            });
+
+            function writeTable(id, list) {
+                var tr = '';
+                for (var i = 0; i < list.length; i++) {
+                    var music = list[i];
+                    tr = tr + '<tr>'
+                        + '<td>'
+                        + music.mName
+                        + '<a href="'
+                        + music.mPath
+                        + '"download='
+                        + '"'
+                        + music.mName
+                        + '" class="btn  btn-default btn-lg" style="border:none;float: right;font-size:15px">\n' +
+                        '<span class="glyphicon  glyphicon-download-alt"></span>\n'
+                        + '</a>'
+                        + '<a value="'
+                        + music.mId
+                        + '" onclick="hreat(this)" href="#" class="btn  btn-default btn-lg" style="border:none;float: right;font-size:15px'
+
+                        + '">\n'
+                        + '<span class="glyphicon  glyphicon-heart"';
+                    if (music.isLove == 1) {
+                        tr += ' style = "color:rgb(255, 0, 0)" value=1';
+                    } else {
+                        tr += ' style = "color:rgb(0, 0, 0)" value=0';
+                    }
+                    tr += '></span>\n'
+                        + '</a>'
+                        + ' <a target="_blank" href="play.html?path='
+                        + music.mPath
+                        + "&mName=" + music.mName
+                        + "&album=" + music.album
+                        + "&singerName=" + music.singerName
+                        + '" class="btn  btn-default btn-lg" style="border:none;float: right;font-size:15px">\n'
+                        + '<span class="glyphicon  glyphicon-play-circle"></span>\n'
+                        + '</a>'
+                        + '</td>';
+
+
+                    tr = tr + '<td>'
+                        + music.singerName
+                        + '</td>';
+                    tr = tr + ' <td>'
+                        + music.album
+                        + '</td>';
+                    tr = tr + '<td>'
+                        + music.time
+                        + '</td>';
+                    tr = tr + '</tr>';
+                }
+
+
+                $("#" + id).html(tr);
+
+            }
+
+            function writePage(id, pageCode, pageNum) {
+                var lis = "";
+                var table="";
+                if(id=="loveUl"){
+                    table="getLoveMusic";
+                }else if(id=="searchUl"){
+                    table="findMusicByName";
+                }else{
+                    table="getHotMusic";
+                }
+                var pageSize = Math.floor(pageNum / 8);
+                var r = Math.floor(pageCode / 5);
+                if (pageCode != 0) {
+                    lis += '<li><a href="#" onclick="'
+                        + table
+                        + '('
+                        + Number(pageCode-1)
+                        + ')">'
+                        + '&laquo;'
+                        + '</a></li>';
+                }
+
+                for (var i = 0; i <= pageSize; i++) {
+                    lis += '<li ';
+
+                    if (pageCode == Number(r * 5 + i)) {
+                        lis += ' class="active" '
+                        lis += '><a href="#" onclick="">'
+                            + Number(r * 5 + i + 1)
+                            + '</a></li>';
+                    }else{
+                        lis += '><a href="#" onclick="'
+                            + table
+                            +'('
+                            + Number(r*5+i)
+                            + ')">'
+                            + Number(r * 5 + i + 1)
+                            + '</a></li>';
+                    }
+
+
+                }
+
+
+                if (Number(pageCode) != pageSize) {
+                    lis += '<li><a href="#" onclick="'
+                        + table
+                        + '('
+                        + Number(pageCode+1)
+                        + ')">'
+                        + '&raquo;'
+                        + '</a></li>';
+                }
+
+
+                $("#" + id).html(lis);
+
+            }
+
+
+            getHotMusic = function (page) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/getHotMusic",
+                    data: {accessToken: accessToken, page: page},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            writeTable("hotMusic", data.list);
+                            //0 是第一页  1是第二页
+                            writePage("hotUl",page, data.pageNum);
+                        }
+                    },
+
+                })
+            }
+
+            getLoveMusic = function (page) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/getLoveMusic",
+                    data: {accessToken: accessToken, page: page},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            writeTable("loveMusic", data.list);
+                            //0 是第一页  1是第二页
+                            writePage("loveUl",page, data.pageNum);
+                        }
+                    },
+
+                })
+            }
+
+
+            findMusicByName = function (page) {
+                var musicName=$("#musicName").val();
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/findMusicByName",
+                    data: {accessToken: accessToken, musicName: musicName,page:page},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            writeTable("searchMusic", data.list);
+                            //0 是第一页  1是第二页
+                            writePage("searchUl",page, data.pageNum);
+                        }
+                    },
+
+                })
+            }
+
+
+            function refreshNewToken(refreshToken) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/guest/refreshToken",
+                    data: {refreshToken: refreshToken},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 1 || data.code == 7) {
+                            alert("error!  请先登录");
+                            window.location.href = "login.html";
+                        } else if (data.code == 0) {
+                            window.sessionStorage.setItem("accessToken", data.accessToken);
+                            window.sessionStorage.setItem("refreshToken", data.refreshToken);
+                            window.location.reload();
+                        }
+                    },
+
+                })
+            };
+
+            //    判断是否登录
+            var accessToken = window.sessionStorage.getItem("accessToken");
+            var refreshToken = window.sessionStorage.getItem("refreshToken");
+            if (accessToken == null || refreshToken == null) {
+                alert("请先登录");
+                window.location.href = "login.html";
+            } else {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/findInfo",
+                    data: {accessToken: accessToken},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 1) {
+                            alert(data.msg + " 请重新输入");
+                        } else if (data.code == 0) {
+                            //  writeTable("hotMusic");
+                            var page = GetQueryString("page");
+                            if (page == null || isNaN(page)) {
+                                page = 0;
+                            }
+                            getHotMusic(page);
+
+                            console.log(JSON.stringify(data.user));
+                            window.sessionStorage.setItem("user", data.user);
+                            // alert(data.user.userName);
+                            $("#userName").html(data.user.name);
+                            //    给模拟框赋值
+                            $("#name").val(data.user.name);
+                            $("#phone").val(data.user.phone);
+                            $("#email").val(data.user.email);
+                            var sex = data.user.sex;
+                            if (sex == 0) {
+                                $("input[name='sex'][value='0']").attr("checked", true);
+
+                            } else if (sex == 1) {
+                                $("input[name='sex'][value='1']").attr("checked", true);
+                            }
+                        } else if (data.code == 7) {
+                            refreshNewToken(refreshToken);
+                        }
+                    },
+                })
+            }
+
+
+            $("#updateUser").on("click", function () {
+                var name = $("#name").val();
+                var email = $("#email").val();
+                var phone = $("#phone").val();
+                var sex = $("input[name='sex']:checked").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8081/user/updateInfo",
+                    data: {accessToken: accessToken, name: name, email: email, phone: phone, sex: sex},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 7) {
+                            refreshNewToken(refreshToken);
+                        } else if (data.code == 0) {
+                            alert("修改成功");
+                            window.location.reload();
+                        }
+                    },
+                })
+
+                //update
+            });
+
+
+            var flag = false;
+            $("#pwd").blur(function () {
+                var password = this.value;
+                password = $.md5(password);
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8081/user/confirmPassword",
+                    data: {accessToken: accessToken, password: password},
+                    dataType: "json",
+
+                    error: function (xhr, status, error) {
+                        alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                    },
+                    success: function (data) {
+                        if (data.code == 7) {
+                            refreshNewToken(refreshToken);
+                        } else if (data.code == 0) {
+                            $("#pwdMsg").css("display", "none");
+                            window.sessionStorage.setItem("uuid", data.uuid);
+                            flag = true;
+                        } else if (data.code == 1) {
+                            $("#pwdMsg").css("display", "inline-block");
+                            flag = false;
+                        }
+                    },
+                })
+            });
+
+            $("#updatePwd").on("click", function () {
+                var password = $("#pwd2").val();
+                password = $.md5(password);
+                if (flag) {
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:8081/user/updatePwd",
+                        data: {
+                            accessToken: accessToken,
+                            uuid: window.sessionStorage.getItem("uuid"),
+                            password: password
+                        },
+                        dataType: "json",
+
+                        error: function (xhr, status, error) {
+                            alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                        },
+                        success: function (data) {
+                            if (data.code == 7) {
+                                refreshNewToken(refreshToken);
+                            } else if (data.code == 0) {
+                                alert("修改成功");
+                                window.sessionStorage.clear();
+                                window.location.href = "login.html";
+                            } else if (data.code == 1) {
+                                alert("修改失败");
+                            }
+                        },
+                    })
+                } else {
+                    alert("原密码错误");
+                }
+
+
+                //update
+            });
+
+            $("#logout").on("click", function () {
+                alert("退出成功");
+                window.sessionStorage.clear();
+                window.location.href = "login.html";
+            })
+
+            var canUp = true;
+            $("#file").on("onchange", function () {
+                var file = this.value;
+                if (!/.(mp3)$/.test(file)) {
+                    alert("必须为mp3格式的文件");
+                    canUp = false;
+                    return false;
+                } else if (((this.files[0].size).toFixed(2)) >= (15 * 1024 * 1024)) {
+                    alert("请上传小于15M的mp3文件");
+                    canUp = false;
+                    return false;
+                }
+            })
+            $("#up").on("click", function () {
+                if (canUp) {
+                    var fData = new FormData($("#uploadMusic")[0]);
+                    fData.append("accessToken", accessToken);
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:8081/user/upload",
+                        data: fData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        dataType: "json",
+
+                        error: function (xhr, status, error) {
+                            alert("xhr: " + xhr.status + ", status: " + status + ", error: " + error)
+                        },
+                        success: function (data) {
+                            if (data.code == 7) {
+                                refreshNewToken(refreshToken);
+                            } else if (data.code == 0) {
+                                alert("上传成功");
+                                window.location.reload();
+                            }else if(data.code==1){
+                                alert(data.msg);
+                            }
+                        },
+                    })
+                } else {
+                    alert("文件错误");
+                    window.location.reload();
+                }
+
+            })
+
+
+            //reday
+        })
+
+    </script>
+</head>
+<body>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#hot" onclick="getHotMusic(0);" data-toggle="tab">
+            热门
+        </a>
+    </li>
+    <li>
+        <a href="#love" onclick="getLoveMusic(0);" data-toggle="tab">
+            我喜欢
+        </a>
+    </li>
+
+    <li>
+        <a href="#upload" data-toggle="tab">
+            上传歌曲
+        </a>
+    </li>
+    <li>
+        <a href="#search" data-toggle="tab">
+            搜索歌曲
+        </a>
+    </li>
+    <li style="position: relative">
+        <div class="input-group" style="width:200px;margin-top: 3px;">
+            <input id="musicName" type="text" class="form-control" placeholder="搜索歌曲" />
+            <span class="input-group-btn">
+               <button  onclick="findMusicByName(0)" class="btn btn-info btn-search glyphicon glyphicon-search"
+                        data-toggle="tab" href="#search" style="margin-top: -1px;"></button>
+            </span>
+        </div>
+    </li>
+    <li class="dropdown" style="float: right">
+        <a href="#" class="dropdown-toggle"
+           data-toggle="dropdown"
+           style="height: 60px">
+            <img alt="" class="img-circle" src="img/photo.jpg" width="38px" height="38px"/>
+            <span style="color: #FFFFFF;font-size: 15px">
+                                <i style="color: black" id="userName"></i>
+                            </span>
+        </a>
+        <ul class="dropdown-menu pull-right"
+            style="background: #FFFFFF;width: 100px;overflow: hidden">
+
+            <li class="list-group-item" role="presentation">
+                <a role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#myModal">
+                    个人信息</a>
+
+
+            </li>
+            <li class="list-group-item" role="presentation">
+                <a role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#pModal">
+                    密码修改</a>
+            </li>
+
+            <li class="list-group-item" role="presentation">
+                <a id="logout" role="menuitem" tabindex="-1" href="#">
+                    退出登录</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane active" id="hot">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>单曲</th>
+                <th>歌手</th>
+                <th>专辑</th>
+                <th>时长</th>
+            </tr>
+            </thead>
+            <tbody id="hotMusic">
+
+            </tbody>
+
+        </table>
+
+        <div style="margin:30px auto; text-align: center;">
+            <ul id="hotUl" class="pagination" style="margin: 0 auto;">
+
+            </ul>
+            <br>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="love">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>单曲</th>
+                <th>歌手</th>
+                <th>专辑</th>
+                <th>时长</th>
+            </tr>
+            </thead>
+            <tbody id="loveMusic">
+
+            </tbody>
+
+        </table>
+
+        <div style="margin:30px auto; text-align: center;">
+            <ul id="loveUl" class="pagination" style="margin: 0 auto;">
+
+            </ul>
+            <br>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="search">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>单曲</th>
+                <th>歌手</th>
+                <th>专辑</th>
+                <th>时长</th>
+            </tr>
+            </thead>
+            <tbody id="searchMusic">
+
+            </tbody>
+
+        </table>
+
+        <div style="margin:30px auto; text-align: center;">
+            <ul id="searchUl" class="pagination" style="margin: 0 auto;">
+
+            </ul>
+            <br>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="upload" style="margin:0 auto; width:400px; height:100px;">
+        <h2>上传歌曲</h2>
+        <div>
+
+        </div>
+        <form id="uploadMusic" role="form" style="width: 300px" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">歌曲名</label>
+                <input type="text" class="form-control" id="music" name="music">
+            </div>
+
+            <div class="form-group">
+                <label for="name">歌手</label>
+                <input type="text" class="form-control" id="singer" name="singer">
+            </div>
+            <div class="form-group">
+                <label for="name">专辑</label>
+                <input type="text" class="form-control" id="album" name="album">
+            </div>
+            <div class="form-group">
+                <label for="name">请选择歌曲文件</label>
+                <input type="file" class="form-control" id="file" name="file">
+
+            </div>
+            <button type="button" class="btn btn-primary" id="up">
+                上传
+            </button>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel" align="center">
+                    个人信息
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="name">昵称</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="radio">
+                        <label for="name"><strong>性别</strong></label>
+                        <label>
+                            <input type="radio" name="sex" value="1">男
+                        </label>
+                        <label>
+                            <input type="radio" name="sex" value="0">女
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">电话</label>
+                        <input type="text" class="form-control" id="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">邮箱</label>
+                        <input type="text" class="form-control" id="email">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="updateUser">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="pModalLabel" align="center">
+                    密码修改
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="pwd">原密码</label>
+                        <span style="color: red;display: none" id="pwdMsg">密码错误</span>
+                        <input type="password" class="form-control" id="pwd">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">新密码</label>
+                        <input type="password" class="form-control" id="pwd2">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="updatePwd">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+</body>
+</html>

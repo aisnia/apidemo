@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- meta data -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!--font-family-->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&amp;subset=devanagari,latin-ext"
+          rel="stylesheet">
+
+    <!-- title of site -->
+    <title>Sign up</title>
+
+    <!-- For favicon png -->
+    <link rel="shortcut icon" type="image/icon" href="assets/logo/favicon.png"/>
+
+    <!--font-awesome.min.css-->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+    <!--animate.css-->
+    <link rel="stylesheet" href="assets/css/animate.css">
+
+    <!--bootstrap.min.css-->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!-- bootsnav -->
+    <link rel="stylesheet" href="assets/css/bootsnav.css">
+
+    <!--style.css-->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!--responsive.css-->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+
+    <script type="text/javascript">
+        function getVCode(){
+            $.ajax({
+                type:"GET",
+                url:"http://localhost:8081/guest/captcha",
+                dataType:"json",
+                error: function(xhr, status, error){
+                    alert("xhr: " + xhr.status + ", status: " + status +  ", error: " + error)
+                },
+                success:function (data) {
+                    if(data.code==1){
+                        alert("服务器端异常 "+data.msg);
+                    }else if(data.code==0){
+                        localStorage.setItem("token",data.token);
+                        $("#vImg").attr("src","data:image/jpg;base64,"+data.img);
+                    }
+                },
+            });
+        }
+        $(document).ready(function () {
+            //获取验证码
+            getVCode();
+            //用户名校验
+            $("#userName").blur(function () {
+                var pattern1 = /^[A-Za-z][A-Za-z0-9]{3,11}$/;
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#userNameMsg").css("display", "none");
+                    $("#userNameIsNull").css("display", "inline-block");
+                } else if (!pattern1.test(this.value)) {
+                    $("#userNameIsNull").css("display", "none");
+                    $("#userNameMsg").css("display", "inline-block");
+                } else {
+                    $("#userNameIsNull").css("display", "none");
+                    $("#userNameMsg").css("display", "none");
+                }
+            })
+            //昵称校验
+            $("#name").blur(function () {
+
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#nameMsg").css("display", "inline-block");
+                }else {
+                    $("#nameMsg").css("display", "none");
+                }
+            })
+            //电话号码校验
+            $("#phone").blur(function () {
+                var pattern1 = /^[0-9]{11}$/;
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#phoneMsg").css("display", "none");
+                    $("#phoneIsNull").css("display", "inline-block");
+                } else if (!pattern1.test(this.value)) {
+                    $("#phoneIsNull").css("display", "none");
+
+                    $("#phoneMsg").css("display", "inline-block");
+
+                } else {
+                    $("#phoneIsNull").css("display", "none");
+
+                    $("#phoneMsg").css("display", "none");
+
+                }
+            })
+            //电子邮箱校验
+            $("#email").blur(function () {
+                var pattern1 = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#emailMsg").css("display", "none");
+                    $("#emailIsNull").css("display", "inline-block");
+                } else if (!pattern1.test(this.value)) {
+                    $("#emailIsNull").css("display", "none");
+
+                    $("#emailMsg").css("display", "inline-block");
+
+                } else {
+                    $("#emailIsNull").css("display", "none");
+                    $("#emailMsg").css("display", "none");
+
+                }
+            })
+            //密码校验
+            $("#password").blur(function () {
+                var pattern1 = /^[A-Za-z0-9]{6,16}$/;
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#pwdMsg").css("display", "none");
+                    $("#pwdIsNull").css("display", "inline-block");
+                } else if (!pattern1.test(this.value)) {
+                    $("#pwdIsNull").css("display", "none");
+
+                    $("#pwdMsg").css("display", "inline-block");
+
+                } else {
+                    $("#pwdIsNull").css("display", "none");
+
+                    $("#pwdMsg").css("display", "none");
+
+                }
+            })
+            //验证码校验
+            $("#vCode").blur(function () {
+                if (this.value == null || $.trim(this.value) == '') {
+                    $("#vCodeNull").css("display", "inline-block");
+                } else {
+                    $("#vCodeNull").css("display", "none");
+                }
+            })
+            //注册
+            $("#register").on("click", function () {
+                var userName = $("#userName").val();
+                var name = $("#name").val();
+                var sex = $(':radio[name="sex"]:checked').val();
+                var phoneNum = $("#phone").val();
+                var email = $("#email").val();
+                var password = $("#password").val();
+                password=$.md5(password);
+                var token=localStorage.getItem("token");
+                var vCode=$("#vCode").val();
+
+                //用户名
+                if (userName == null || $.trim(userName) == '') {
+                    $("#userNameMsg").css("display", "none");
+                    $("#userNameIsNull").css("display", "inline-block");
+                }
+                //	昵称
+                else if (name == null || $.trim(name) == '') {
+                    $("#nameMsg").css("display", "inline-block");
+                }
+                //	电话号码
+                else if (phoneNum == null || $.trim(phoneNum) == '') {
+                    $("#phoneMsg").css("display", "none");
+                    $("#phoneIsNull").css("display", "inline-block");
+                }
+                //	电子邮箱
+                else if (email == null || $.trim(email) == '') {
+                    $("#emailMsg").css("display", "none");
+                    $("#emailIsNull").css("display", "inline-block");
+                }
+                //	密码
+                else if (password == null || $.trim(password) == '') {
+                    $("#pwdMsg").css("display", "none");
+                    $("#pwdIsNull").css("display", "inline-block");
+                } else {
+                    //发请求
+                    $.ajax({
+                        type:"POST",
+                        url:"http://localhost:8081/guest/register",
+                        data:{token:token,vCode:vCode,userName:userName,password:password,name:name,sex:sex,phone:phoneNum,email:email},
+                        dataType:"json",
+
+                        error: function(xhr, status, error){
+                            alert("xhr: " + xhr.status + ", status: " + status +  ", error: " + error)
+                        },
+                        success:function (data) {
+                            if(data.code==1){
+                                alert(data.msg+" 请重新输入");
+                            }else if(data.code==0){
+                                window.location.href="login.html";
+                            }
+                        },
+                    })
+                }
+
+
+            })
+
+
+        })
+    </script>
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+    your browser</a> to improve your experience and security.</p>
+<![endif]-->
+
+<!-- signin end -->
+<section class="signin signup">
+    <div class="container">
+
+        <div class="sign-content">
+            <h2>注 册</h2>
+
+            <div class="signin-form">
+                <div class=" ">
+                    <div class=" ">
+                        <form action="#">
+                            <div class="form-group">
+                                <label style="font-size: 20px">用户名</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="userNameMsg">用户名格式不对</span>
+                                <span style="color: red;display: none" id="userNameIsNull">用户名不能为空</span>
+
+                                <input type="text" class="form-control" id="userName" placeholder="请输入（3-11）位的数字和字母">
+                            </div><!--/.form-group -->
+                            <div class="form-group">
+                                <label style="font-size: 20px">昵称</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="nameMsg">昵称不能为空</span>
+                                <input type="text" class="form-control" id="name" placeholder="请输入你的昵称">
+                            </div><!--/.form-group -->
+                            <div class="form-group">
+                                <label style="font-size: 20px">性别</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="sex" id="sex1" value="1" checked="checked">男</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input type="radio" name="sex" id="sex2" value="0">女</label>
+                            </div><!--/.form-group -->
+                            <div class="form-group">
+                                <label style="font-size: 20px">电话</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="phoneMsg">电话格式不对</span>
+                                <span style="color: red;display: none" id="phoneIsNull">电话不能为空</span>
+                                <input type="text" class="form-control" id="phone" placeholder="请输入你的电话号码 11位">
+                            </div><!--/.form-group -->
+
+                            <div class="form-group">
+                                <label style="font-size: 20px">电子邮箱</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="emailMsg">邮箱格式不对</span>
+                                <span style="color: red;display: none" id="emailIsNull">邮箱不能为空</span>
+                                <input type="email" class="form-control" id="email" placeholder="请输入你的电子邮箱">
+                            </div><!--/.form-group -->
+                            <div class="form-group">
+                                <label style="font-size: 20px">密码</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="pwdMsg">密码格式不对</span>
+                                <span style="color: red;display: none" id="pwdIsNull">密码不能为空</span>
+                                <input type="password" class="form-control" id="password" placeholder="请输入你的密码 （6-16数字或字母）">
+                            </div><!--/.form-group -->
+                            <div class="form-group">
+                                <label style="font-size: 20px">验证码</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span style="color: red;display: none" id="vCodeMsg">验证码错误</span>
+                                <span style="color: red;display: none" id="vCodeNull">验证码不能为空</span>
+                                <input type="password" class="form-control" id="vCode" placeholder="请输入验证码">
+                                <img id="vImg" style="width: 300px;height: 50px" onclick=getVCode()>
+
+                            </div><!--/.form-group -->
+                        </form><!--/form -->
+                    </div><!--/.col -->
+                </div><!--/.row -->
+
+            </div>
+            <div class="signin-footer">
+                <button id="register" type="button" class="btn signin_btn signin_btn_two">
+                    注册
+                </button>
+                <p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    已经有账号?
+                    <a href="login.html">登录</a>
+                </p>
+            </div><!--/.signin-footer -->
+
+        </div><!--/.sign-content -->
+
+
+    </div><!--/.modal-body -->
+
+    </div><!--/.sign-content -->
+    </div><!--/.modal-content -->
+    </div><!--/.modal-dialog -->
+    </div><!--/.modal -->
+    <!-- modal part end -->
+    </div><!--/.container -->
+
+</section><!--/.signin -->
+
+
+</body>
+
+</html>

@@ -1,5 +1,7 @@
 package com.xiaoqiang.apidemo;
 
+import com.xiaoqiang.apidemo.dao.MusicMapper;
+import com.xiaoqiang.apidemo.service.MusicService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,11 +17,10 @@ public class ApidemoApplicationTests {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    MusicService musicService;
     @Test
     public void contextLoads() {
-        for (int i = 0; i < 10; i++) {
-            logger.trace(i + "日志输出");
-        }
     }
 
 }

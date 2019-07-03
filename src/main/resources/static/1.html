@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#user" data-toggle="tab">
+           用户管理
+        </a>
+    </li>
+    <li>
+        <a href="#music" data-toggle="tab">
+            音乐管理
+        </a>
+    </li>
+    <li>
+        <a href="#upload" data-toggle="tab">
+            上传歌曲
+        </a>
+    </li>
+
+    <li style="position: relative">
+        <div class="input-group"  style="width:200px;margin-top: 3px;">
+            <input type="text" class="form-control"placeholder="搜索歌曲"/>
+            <span class="input-group-btn">
+               <button type="submit" class="btn btn-info btn-search glyphicon glyphicon-search" style="margin-top: -1px;"></button>
+            </span>
+        </div>
+    </li>
+    <li class="dropdown" style="float: right">
+        <a href="#" class="dropdown-toggle"
+           data-toggle="dropdown"
+           style="height: 60px">
+            <img alt="" class="img-circle" src="img/photo.jpg" width="38px" height="38px"/>
+            <span style="color: #FFFFFF;font-size: 15px">
+                                <i>username</i>
+                            </span>
+        </a>
+        <ul class="dropdown-menu"
+            style="background: #FFFFFF;width: 320px;overflow: hidden">
+
+            <li class="list-group-item" role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">
+                    个人信息</a>
+            </li>
+            <li class="list-group-item"role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">
+                    密码修改</a>
+            </li>
+
+            <li class="list-group-item" role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">
+                    退出登录</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade" id="music">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>单曲</th>
+                <th>歌手</th>
+                <th>专辑</th>
+                <th>时长</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Tanmay</td>
+                <td>Bangalore</td>
+                <td>560001</td>
+                <td>560001</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Sachin</td>
+                <td>Mumbai</td>
+                <td>400003</td>
+                <td>400003</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+
+            </tr>
+            <tr>
+                <td>Uma</td>
+                <td>Pune</td>
+                <td>411027</td>
+                <td>411027</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+        <div>
+
+        </div>
+    </div>
+    <div class="tab-pane active" id="user">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>用户名</th>
+                <th>昵称</th>
+                <th>注册时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Tanmay</td>
+                <td>Bangalore</td>
+                <td>560001</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Sachin</td>
+                <td>Mumbai</td>
+                <td>400003</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+
+            </tr>
+            <tr>
+                <td>Uma</td>
+                <td>Pune</td>
+                <td>411027</td>
+                <td>
+                    <button type="button" class="btn   btn-success">修改</button>
+                    <button type="button" class="btn  btn-danger">删除</button>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="upload">
+        <h2>上传歌曲</h2>
+    </div>
+
+</div>
+</body>
+</html>

@@ -12,7 +12,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 
 /**
  * @author xiaoqiang
- * @date 2019/3/29-17:39
+ * @date 2019/6/24-22:00
  */
 public class JWTRealm extends AuthorizingRealm {
 

@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * @author xiaoqiang
- * @date 2019/3/28-21:19
+ * @date 2019/6/24-21:12
  */
 public class UserRealm extends AuthorizingRealm {
 

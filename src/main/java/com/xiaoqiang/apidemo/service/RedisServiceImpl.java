@@ -3,6 +3,7 @@ package com.xiaoqiang.apidemo.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,14 @@ public class RedisServiceImpl implements RedisService {
             result = true;
         }catch (Exception e){
             logger.error("写入redis缓存失败！错误信息为: " + e.getMessage());
+
+
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
+
     }
 
     @Override
@@ -44,8 +51,11 @@ public class RedisServiceImpl implements RedisService {
         }catch (Exception e){
             e.printStackTrace();
             logger.error("写入redis缓存（设置expire存活时间）失败！错误信息为：" + e.getMessage());
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
     }
 
     @Override
@@ -59,8 +69,12 @@ public class RedisServiceImpl implements RedisService {
         }catch (Exception e){
             e.printStackTrace();
             logger.error("写入redis缓存（设置expire存活时间）失败！错误信息为：" + e.getMessage());
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
+
     }
 
     @Override
@@ -71,8 +85,12 @@ public class RedisServiceImpl implements RedisService {
             result = operations.get(key);
         }catch (Exception e) {
             logger.error("读取redis缓存失败！错误信息为：" + e.getMessage());
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
+
     }
 
     @Override
@@ -82,8 +100,12 @@ public class RedisServiceImpl implements RedisService {
             result = redisTemplate.hasKey(key);
         }catch (Exception e){
             logger.error("判断redis缓存中是否有对应的key失败！错误信息为：" + e.getMessage());
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
+
     }
 
     @Override
@@ -96,8 +118,12 @@ public class RedisServiceImpl implements RedisService {
             result = true;
         }catch (Exception e){
             logger.error("redis根据key删除对应的value失败！错误信息为：" + e.getMessage());
+        }finally {
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
         }
-        return result;
+
     }
 
     @Override
@@ -113,6 +139,12 @@ public class RedisServiceImpl implements RedisService {
         if(delta < 0){
             throw new RuntimeException("递增因子必须大于0");
         }
-        return redisTemplate.opsForValue().increment(key,delta);
+        long result= redisTemplate.opsForValue().increment(key,delta);
+
+
+            RedisConnectionUtils.unbindConnection(redisTemplate.getConnectionFactory());
+            return result;
+
+
     }
 }

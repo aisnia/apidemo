@@ -25,7 +25,8 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(AuthorizationException.class)
     public Map<String,Object> noAuthorizationHandle(){
         HashMap<String, Object> map = new HashMap<>(16);
-        map.put("code", "无权限");
+        map.put("msg", "无权限");
+        map.put("code", "9");
         return map;
     }
 
@@ -35,7 +36,8 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(TokenExpiredException.class)
     public Map<String,Object> tokenExpireHandle(){
         HashMap<String, Object> map = new HashMap<>(16);
-        map.put("code", "token过期");
+        map.put("code", "7");
+        map.put("msg", "token过期");
         return map;
     }
 
@@ -46,6 +48,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler({JWTDecodeException.class, SignatureVerificationException.class})
     public Map<String,Object> tokenErrorHandle(){
         HashMap<String, Object> map = new HashMap<>(16);
+        map.put("code", "9");
         map.put("code", "token错误");
         return map;
     }
@@ -54,7 +57,8 @@ public class ExceptionHandler {
     public Map<String,Object> validationExceptionHandler(){
         HashMap<String, Object> map = new HashMap<>(16);
 
-        map.put("code","参数不合法");
+        map.put("code","1");
+        map.put("msg","参数不合法");
         return map;
     }
 
